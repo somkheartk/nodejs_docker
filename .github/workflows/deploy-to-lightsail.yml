@@ -1,0 +1,42 @@
+name: Deploy to AWS Lightsail
+
+on:
+  push:
+    branches:
+      - main  # Deploy เมื่อ Push ไปที่ main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Login to AWS CLI
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      # Build Docker image
+      - name: Build Docker Image
+        run: |
+          docker build -t my-app:latest .
+
+      # Push Docker image to Lightsail
+      - name: Push to AWS Lightsail
+        run: |
+          aws lightsail push-container-image \
+            --service-name my-container-service \
+            --label my-app \
+            --image my-app:latest
+
+      # Deploy to Lightsail
+      - name: Deploy to Lightsail
+        run: |
+          aws lightsail create-container-service-deployment \
+            --service-name my-container-service \
+            --containers file://containers.json

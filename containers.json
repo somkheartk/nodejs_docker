@@ -1,0 +1,9 @@
+{
+    "my-app": {
+      "image": "my-container-service/my-app:latest",
+      "ports": {
+        "80": "HTTP"
+      }
+    }
+  }
+  
