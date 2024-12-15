@@ -13,6 +13,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # Install AWS CLI
+      - name: Install AWS CLI
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y unzip
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          unzip awscliv2.zip
+          sudo ./aws/install
+
+      # Install Lightsail Control Plugin
+      - name: Install Lightsail Control Plugin
+        run: |
+          curl -o lightsailctl https://s3.us-west-2.amazonaws.com/lightsailctl/latest/linux-amd64/lightsailctl
+          chmod +x lightsailctl
+          sudo mv lightsailctl /usr/local/bin/
+
       # Login to AWS CLI
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v3
